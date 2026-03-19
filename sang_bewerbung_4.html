@@ -1,0 +1,1352 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width,initial-scale=1.0"/>
+<title>SANG – General of the Army | Olaf Schafe</title>
+<link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Barlow:ital,wght@0,300;0,400;0,600;1,300&family=Barlow+Condensed:wght@300;400;600;700&display=swap" rel="stylesheet"/>
+<style>
+:root{
+  --g:#7eda4a;--gl:#95e866;--gs:#aff080;--gd:#3a9018;
+  --gold:#f0c84a;--goldl:#f5d96e;--goldf:#fff0a0;
+  --bg:#1a3a0a;--bg2:#162e08;--bg3:#122806;
+  --panel:#1e4410;--panel2:#1a3a0c;
+  --bdr:rgba(126,218,74,0.22);
+  --txt:#d4f0b8;--txtd:#88c060;
+  --ink:#e8fad0;
+  --red:#ff6b5b;
+  --nav-h:52px;
+}
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+html{scroll-behavior:smooth}
+body{
+  background:var(--bg);color:var(--txt);
+  font-family:'Barlow',sans-serif;font-weight:400;
+  overflow-x:hidden;
+  -webkit-user-select:none;-moz-user-select:none;user-select:none;
+  cursor:default;
+}
+
+/* ─── SCANLINES ─── */
+body::after{
+  content:'';position:fixed;inset:0;pointer-events:none;z-index:9998;
+  background:repeating-linear-gradient(0deg,rgba(0,0,0,0.018) 0,rgba(0,0,0,0.018) 1px,transparent 1px,transparent 3px);
+}
+
+/* ─── PARTICLES CANVAS ─── */
+#particles{position:fixed;inset:0;z-index:0;pointer-events:none;opacity:0.55}
+
+/* ════════════════════════════════
+   AUTO-HIDE NAV
+════════════════════════════════ */
+nav{
+  position:fixed;top:0;left:0;right:0;z-index:2000;
+  height:var(--nav-h);
+  display:flex;align-items:center;justify-content:space-between;
+  padding:0 36px;
+  background:rgba(18,38,8,0.97);
+  backdrop-filter:blur(16px);
+  border-bottom:1px solid var(--bdr);
+  transform:translateY(0);
+  transition:transform 0.5s cubic-bezier(.4,0,.2,1), box-shadow 0.3s;
+  box-shadow:0 2px 24px rgba(46,122,16,0.08);
+}
+nav.hidden{transform:translateY(-100%)}
+nav:hover, nav.pinned{transform:translateY(0)!important}
+
+/* nav peek strip — hover zone */
+#nav-peek{
+  position:fixed;top:0;left:0;right:0;height:8px;z-index:1999;
+}
+
+.nav-logo{
+  font-family:'Bebas Neue',sans-serif;font-size:22px;letter-spacing:4px;
+  color:var(--g);cursor:pointer;
+  display:flex;align-items:center;gap:10px;
+  transition:color 0.2s;
+}
+.nav-logo:hover{color:var(--gs)}
+.nav-logo-badge{
+  width:28px;height:28px;background:var(--g);border-radius:2px;
+  display:flex;align-items:center;justify-content:center;
+  font-size:14px;color:#fff;
+  transition:transform 0.3s, background 0.2s;
+}
+.nav-logo:hover .nav-logo-badge{transform:rotate(15deg);background:var(--gs)}
+
+.nav-links{display:flex;gap:2px;list-style:none}
+.nav-links li a{
+  font-family:'Barlow Condensed',sans-serif;font-size:11px;letter-spacing:2.5px;
+  text-transform:uppercase;color:var(--txtd);text-decoration:none;
+  padding:7px 13px;display:block;position:relative;
+  transition:color 0.2s;
+}
+.nav-links li a::after{
+  content:'';position:absolute;bottom:4px;left:13px;right:13px;height:1px;
+  background:var(--g);transform:scaleX(0);transform-origin:left;
+  transition:transform 0.3s cubic-bezier(.4,0,.2,1);
+}
+.nav-links li a:hover{color:var(--ink);background:rgba(126,218,74,0.08)}
+.nav-links li a:hover::after{transform:scaleX(1)}
+.nav-links li a.active{color:var(--g);font-weight:700}
+.nav-links li a.active::after{transform:scaleX(1)}
+
+/* page dots */
+.nav-dots{display:flex;gap:6px;align-items:center}
+.nav-dot{
+  width:7px;height:7px;border-radius:50%;
+  background:var(--bdr);border:1px solid var(--bdr);
+  cursor:pointer;transition:background 0.2s,transform 0.2s;
+}
+.nav-dot.active{background:var(--g);transform:scale(1.3)}
+.nav-dot:hover{background:var(--gs)}
+
+@media(max-width:750px){
+  .nav-links{display:none}
+  nav{padding:0 20px}
+}
+
+/* ════════════════════════════════
+   PAGE SYSTEM
+════════════════════════════════ */
+.page{
+  display:none;min-height:100vh;
+  padding-top:var(--nav-h);
+  position:relative;z-index:1;
+}
+.page.active{display:block}
+
+/* ─── PAGE ENTER ANIMATIONS ─── */
+.page-enter .anim-slide-up{
+  animation:slideUp 0.65s cubic-bezier(.16,1,.3,1) both;
+}
+.page-enter .anim-slide-up:nth-child(1){animation-delay:0.05s}
+.page-enter .anim-slide-up:nth-child(2){animation-delay:0.12s}
+.page-enter .anim-slide-up:nth-child(3){animation-delay:0.19s}
+.page-enter .anim-slide-up:nth-child(4){animation-delay:0.26s}
+.page-enter .anim-slide-up:nth-child(5){animation-delay:0.33s}
+
+@keyframes slideUp{from{opacity:0;transform:translateY(40px)}to{opacity:1;transform:translateY(0)}}
+@keyframes fadeIn{from{opacity:0}to{opacity:1}}
+@keyframes floatIn{from{opacity:0;transform:translateY(-24px) scale(0.88)}to{opacity:1;transform:translateY(0) scale(1)}}
+@keyframes fadeUp{from{opacity:0;transform:translateY(22px)}to{opacity:1;transform:translateY(0)}}
+@keyframes bounce{0%,100%{transform:rotate(45deg) translateY(0)}50%{transform:rotate(45deg) translateY(7px)}}
+@keyframes pulse{0%,100%{opacity:1}50%{opacity:0.4}}
+@keyframes glitch1{0%,100%{clip-path:inset(0 0 95% 0)}20%{clip-path:inset(30% 0 50% 0)}40%{clip-path:inset(70% 0 10% 0)}60%{clip-path:inset(10% 0 75% 0)}80%{clip-path:inset(55% 0 30% 0)}}
+@keyframes glitch2{0%,100%{clip-path:inset(80% 0 5% 0);transform:translate(3px,0)}20%{clip-path:inset(10% 0 80% 0);transform:translate(-3px,0)}40%{clip-path:inset(50% 0 30% 0);transform:translate(2px,0)}60%{clip-path:inset(20% 0 60% 0);transform:translate(-2px,0)}80%{clip-path:inset(65% 0 20% 0);transform:translate(3px,0)}}
+@keyframes stampIn{0%{opacity:0;transform:scale(2.5) rotate(-8deg)}60%{transform:scale(0.96) rotate(1deg)}100%{opacity:1;transform:scale(1) rotate(0deg)}}
+@keyframes borderRun{0%{background-position:0% 50%}100%{background-position:200% 50%}}
+@keyframes scanLine{0%{top:-4px}100%{top:100%}}
+@keyframes countUp{from{opacity:0;transform:translateY(12px)}to{opacity:1;transform:translateY(0)}}
+@keyframes shimmer{0%{background-position:-200% 0}100%{background-position:200% 0}}
+@keyframes rankReveal{0%{opacity:0;transform:translateX(-20px) skewX(-4deg)}100%{opacity:1;transform:translateX(0) skewX(0)}}
+@keyframes lineGrow{from{scaleX:0}to{scaleX:1}}
+
+/* ── REVEAL ON SCROLL ── */
+.reveal{opacity:0;transform:translateY(36px);transition:opacity 0.75s ease,transform 0.75s cubic-bezier(.16,1,.3,1)}
+.reveal.visible{opacity:1;transform:translateY(0)}
+.reveal-left{opacity:0;transform:translateX(-40px);transition:opacity 0.75s ease,transform 0.75s cubic-bezier(.16,1,.3,1)}
+.reveal-left.visible{opacity:1;transform:translateX(0)}
+.reveal-right{opacity:0;transform:translateX(40px);transition:opacity 0.75s ease,transform 0.75s cubic-bezier(.16,1,.3,1)}
+.reveal-right.visible{opacity:1;transform:translateX(0)}
+.reveal-scale{opacity:0;transform:scale(0.9);transition:opacity 0.6s ease,transform 0.6s cubic-bezier(.16,1,.3,1)}
+.reveal-scale.visible{opacity:1;transform:scale(1)}
+
+/* ─── TRANSITION OVERLAY ─── */
+#toverlay{
+  position:fixed;inset:0;z-index:5000;pointer-events:none;
+  background:#1a3a0a;opacity:0;
+  transition:opacity 0.22s ease;
+}
+#toverlay.show{opacity:1;pointer-events:all}
+
+/* ─── SCANLINE SWEEP (page load effect) ─── */
+#sweep{
+  position:fixed;left:0;right:0;height:3px;z-index:4999;
+  background:linear-gradient(90deg,transparent,var(--gs),transparent);
+  opacity:0;pointer-events:none;top:-4px;
+}
+#sweep.run{opacity:1;animation:scanLine 0.5s ease forwards}
+
+/* ════════════════════════════════
+   SHARED COMPONENTS
+════════════════════════════════ */
+.section{position:relative;max-width:1100px;margin:0 auto;padding:80px 32px}
+.stag{font-family:'Barlow Condensed',sans-serif;font-size:10px;letter-spacing:6px;text-transform:uppercase;color:var(--goldl);margin-bottom:10px;display:flex;align-items:center;gap:10px}
+.stag::before{content:'';width:24px;height:1px;background:var(--goldl);display:inline-block}
+.stitle{font-family:'Bebas Neue',sans-serif;font-size:clamp(36px,6vw,64px);color:var(--ink);line-height:1;margin-bottom:48px;position:relative}
+.stitle em{font-style:normal;color:var(--g)}
+.sep{width:100%;height:1px;background:linear-gradient(90deg,transparent,var(--bdr),transparent)}
+.breadcrumb{
+  padding:12px 32px;background:var(--bg2);border-bottom:1px solid var(--bdr);
+  font-family:'Barlow Condensed',sans-serif;font-size:11px;letter-spacing:3px;text-transform:uppercase;color:var(--txtd);
+}
+.breadcrumb span{color:var(--g)}
+
+/* ─── ANIMATED BORDER CARD ─── */
+.acard{
+  position:relative;background:var(--panel);padding:32px;
+  overflow:hidden;transition:transform 0.3s cubic-bezier(.16,1,.3,1),box-shadow 0.3s;
+}
+.acard::before{
+  content:'';position:absolute;inset:0;
+  background:linear-gradient(90deg,transparent,rgba(126,218,74,0.1),transparent);
+  background-size:200% 100%;
+  opacity:0;transition:opacity 0.3s;
+  animation:shimmer 1.5s linear infinite;
+}
+.acard:hover{transform:translateY(-3px);box-shadow:0 12px 40px rgba(0,0,0,0.35)}
+.acard:hover::before{opacity:1}
+.acard-border{
+  position:absolute;inset:0;
+  border:1px solid transparent;
+  background:linear-gradient(var(--panel),var(--panel)) padding-box,
+             linear-gradient(90deg,var(--bdr),var(--gs),var(--bdr)) border-box;
+  background-size:auto,200% auto;
+  animation:borderRun 3s linear infinite;
+  animation-play-state:paused;
+  pointer-events:none;
+}
+.acard:hover .acard-border{animation-play-state:running}
+
+/* ─── GLITCH TEXT ─── */
+.glitch{position:relative;display:inline-block}
+.glitch::before,.glitch::after{
+  content:attr(data-text);position:absolute;top:0;left:0;
+  font-family:'Bebas Neue',sans-serif;width:100%;height:100%;
+  overflow:hidden;
+}
+.glitch::before{color:rgba(94,196,53,0.7);left:2px;animation:glitch1 4s infinite linear}
+.glitch::after{color:rgba(201,162,39,0.6);left:-2px;animation:glitch2 4s infinite linear;animation-delay:0.5s}
+
+/* ─── FOOTER ─── */
+footer{
+  background:var(--bg2);border-top:1px solid var(--bdr);
+  padding:44px 32px;text-align:center;position:relative;overflow:hidden;
+}
+footer::before{
+  content:'';position:absolute;bottom:0;left:0;right:0;height:3px;
+  background:linear-gradient(90deg,transparent,var(--gs),var(--goldl),var(--gs),transparent);
+  background-size:200% 100%;animation:borderRun 4s linear infinite;
+}
+.ftitle{font-family:'Bebas Neue',sans-serif;font-size:26px;color:var(--ink);letter-spacing:3px;margin-bottom:4px}
+.fsub{font-size:11px;color:var(--txtd);letter-spacing:3px;text-transform:uppercase;margin-bottom:20px}
+.fsig{font-family:'Barlow Condensed',sans-serif;font-size:15px;color:var(--goldl);letter-spacing:1px}
+.fsig span{color:var(--txtd)}
+.fpages{display:flex;gap:6px;justify-content:center;flex-wrap:wrap;margin-top:20px}
+.fpbtn{
+  font-family:'Barlow Condensed',sans-serif;font-size:11px;letter-spacing:2px;
+  text-transform:uppercase;color:var(--txtd);cursor:pointer;
+  padding:7px 16px;border:1px solid var(--bdr);background:transparent;
+  transition:all 0.2s;position:relative;overflow:hidden;
+}
+.fpbtn::after{
+  content:'';position:absolute;inset:0;background:var(--g);
+  transform:scaleX(0);transform-origin:left;transition:transform 0.25s cubic-bezier(.4,0,.2,1);
+  z-index:-1;
+}
+.fpbtn:hover{color:#fff;border-color:var(--g)}
+.fpbtn:hover::after{transform:scaleX(1)}
+
+/* ─── COPY TOAST ─── */
+#ctost{
+  position:fixed;bottom:28px;left:50%;
+  transform:translateX(-50%) translateY(70px);
+  background:var(--red);color:#fff;
+  font-family:'Barlow Condensed',sans-serif;font-size:13px;letter-spacing:1px;
+  padding:12px 26px;z-index:99999;
+  transition:transform 0.4s cubic-bezier(.16,1,.3,1),opacity 0.4s;
+  opacity:0;pointer-events:none;text-align:center;max-width:92vw;
+  border-left:3px solid rgba(255,255,255,0.3);
+}
+#ctost.show{transform:translateX(-50%) translateY(0);opacity:1}
+
+/* ════════════════════════════════
+   PAGE: HOME
+════════════════════════════════ */
+.hero{
+  position:relative;min-height:calc(100vh - var(--nav-h));
+  display:flex;flex-direction:column;align-items:center;justify-content:center;
+  text-align:center;padding:60px 24px 80px;overflow:hidden;
+}
+.hero-bg{
+  position:absolute;inset:0;
+  background:
+    radial-gradient(ellipse 90% 70% at 50% 20%,rgba(80,180,30,0.35) 0%,transparent 65%),
+    radial-gradient(ellipse 60% 50% at 80% 80%,rgba(240,200,74,0.08) 0%,transparent 60%),
+    linear-gradient(180deg,#1a3a0a 0%,#1e4410 55%,#1a3a0a 100%);
+}
+.hero-grid{
+  position:absolute;inset:0;
+  background-image:
+    linear-gradient(rgba(126,218,74,0.08) 1px,transparent 1px),
+    linear-gradient(90deg,rgba(126,218,74,0.08) 1px,transparent 1px);
+  background-size:55px 55px;
+  mask-image:radial-gradient(ellipse 85% 75% at 50% 35%,black,transparent);
+  animation:fadeIn 2s 0.5s both;
+}
+
+/* Floating orbs */
+.orb{
+  position:absolute;border-radius:50%;pointer-events:none;filter:blur(60px);
+  animation:orbFloat linear infinite;
+}
+.orb1{width:300px;height:300px;background:rgba(126,218,74,0.14);top:5%;left:-5%;animation-duration:18s}
+.orb2{width:200px;height:200px;background:rgba(240,200,74,0.08);top:60%;right:-5%;animation-duration:14s}
+.orb3{width:150px;height:150px;background:rgba(94,196,53,0.10);bottom:10%;left:40%;animation-duration:22s}
+@keyframes orbFloat{0%{transform:translateY(0) rotate(0deg)}50%{transform:translateY(-30px) rotate(180deg)}100%{transform:translateY(0) rotate(360deg)}}
+
+.hero-badge{
+  display:inline-flex;align-items:center;gap:8px;
+  background:rgba(94,196,53,0.10);border:1px solid var(--bdr);
+  padding:7px 18px;margin-bottom:20px;
+  font-family:'Barlow Condensed',sans-serif;font-size:11px;letter-spacing:4px;text-transform:uppercase;color:var(--goldl);
+  animation:fadeUp 0.9s 0.1s both;
+  position:relative;overflow:hidden;
+}
+.hero-badge::before{
+  content:'';position:absolute;inset:0;
+  background:linear-gradient(90deg,transparent,rgba(94,196,53,0.12),transparent);
+  background-size:200% 100%;animation:shimmer 2s linear infinite;
+}
+.hero-badge-dot{width:6px;height:6px;border-radius:50%;background:var(--gs);animation:pulse 2s infinite}
+
+.hero-eagle{
+  font-size:88px;line-height:1;margin-bottom:14px;
+  filter:drop-shadow(0 0 32px rgba(46,122,16,0.35));
+  animation:floatIn 1.3s cubic-bezier(.16,1,.3,1) 0.3s both;
+}
+
+.hero-title-wrap{position:relative;margin-bottom:8px}
+.hero-title{
+  font-family:'Bebas Neue',sans-serif;
+  font-size:clamp(58px,11vw,120px);
+  line-height:0.92;color:var(--ink);letter-spacing:3px;
+  animation:fadeUp 1s 0.4s both;
+}
+.hero-title-sub{
+  color:var(--g);display:block;
+  font-size:clamp(40px,7.5vw,86px);
+}
+
+/* typed subtitle */
+.hero-typed{
+  font-family:'Barlow Condensed',sans-serif;font-size:clamp(13px,2vw,18px);
+  letter-spacing:4px;text-transform:uppercase;color:var(--txtd);
+  margin-top:12px;animation:fadeUp 1s 0.7s both;
+  min-height:1.5em;
+}
+.hero-typed .cursor{
+  display:inline-block;width:2px;height:1em;background:var(--g);
+  vertical-align:middle;margin-left:2px;animation:pulse 0.8s infinite;
+}
+
+.hero-divider{
+  width:100px;height:2px;
+  background:linear-gradient(90deg,transparent,var(--goldl),transparent);
+  margin:28px auto;animation:fadeUp 1s 0.85s both;
+}
+
+.hero-stats{
+  display:flex;gap:0;justify-content:center;flex-wrap:wrap;
+  animation:fadeUp 1s 1s both;
+  border:1px solid var(--bdr);overflow:hidden;
+}
+.hero-stat{
+  padding:18px 32px;text-align:center;position:relative;
+  border-right:1px solid var(--bdr);
+}
+.hero-stat:last-child{border-right:none}
+.hero-stat .v{
+  font-family:'Bebas Neue',sans-serif;font-size:30px;color:var(--goldl);display:block;
+  animation:countUp 0.8s cubic-bezier(.16,1,.3,1) both;
+}
+.hero-stat .l{font-size:9px;letter-spacing:3px;text-transform:uppercase;color:var(--txtd)}
+
+.hero-cta{
+  display:flex;gap:10px;justify-content:center;flex-wrap:wrap;
+  margin-top:36px;animation:fadeUp 1s 1.15s both;
+}
+.cta-btn{
+  font-family:'Barlow Condensed',sans-serif;font-size:12px;letter-spacing:3px;text-transform:uppercase;
+  padding:12px 24px;cursor:pointer;display:flex;align-items:center;gap:8px;
+  position:relative;overflow:hidden;transition:color 0.25s;
+}
+.cta-primary{
+  background:var(--g);color:#fff;border:1px solid var(--g);
+}
+.cta-primary::after{
+  content:'';position:absolute;inset:0;background:var(--gl);
+  transform:scaleX(0);transform-origin:left;transition:transform 0.3s cubic-bezier(.4,0,.2,1);z-index:0;
+}
+.cta-primary:hover::after{transform:scaleX(1)}
+.cta-primary span,.cta-secondary span{position:relative;z-index:1}
+.cta-secondary{
+  background:transparent;color:var(--g);border:1px solid var(--bdr);
+}
+.cta-secondary::after{
+  content:'';position:absolute;inset:0;background:rgba(94,196,53,0.10);
+  transform:scaleX(0);transform-origin:left;transition:transform 0.3s cubic-bezier(.4,0,.2,1);z-index:0;
+}
+.cta-secondary:hover{border-color:var(--g)}
+.cta-secondary:hover::after{transform:scaleX(1)}
+
+.scroll-hint{
+  position:absolute;bottom:28px;left:50%;transform:translateX(-50%);
+  display:flex;flex-direction:column;align-items:center;gap:6px;
+  color:var(--txtd);font-size:9px;letter-spacing:4px;text-transform:uppercase;
+  animation:fadeUp 1s 1.4s both;
+}
+.scroll-arrow{
+  width:18px;height:18px;
+  border-right:2px solid var(--g);border-bottom:2px solid var(--g);
+  transform:rotate(45deg);animation:bounce 1.6s infinite;
+}
+
+/* ════════════════════════════════
+   PAGE: PROFIL
+════════════════════════════════ */
+.about-grid{display:grid;grid-template-columns:1fr 1fr;gap:3px}
+@media(max-width:680px){.about-grid{grid-template-columns:1fr}}
+.about-card{
+  background:var(--panel);padding:36px;position:relative;overflow:hidden;
+  transition:transform 0.35s cubic-bezier(.16,1,.3,1),box-shadow 0.3s;
+}
+.about-card::before{
+  content:'';position:absolute;top:0;left:0;right:0;height:2px;
+  background:linear-gradient(90deg,transparent,var(--gs),transparent);
+  transform:scaleX(0);transition:transform 0.4s cubic-bezier(.16,1,.3,1);
+}
+.about-card:hover::before{transform:scaleX(1)}
+.about-card:hover{transform:translateY(-4px);box-shadow:0 16px 48px rgba(0,0,0,0.3)}
+.about-card-num{
+  position:absolute;top:16px;right:20px;
+  font-family:'Bebas Neue',sans-serif;font-size:60px;line-height:1;
+  color:rgba(126,218,74,0.1);
+}
+.aci{font-size:30px;margin-bottom:14px}
+.ac h3{font-family:'Bebas Neue',sans-serif;font-size:24px;color:var(--ink);letter-spacing:1px;margin-bottom:10px}
+.ac p{font-size:14px;line-height:1.8;color:var(--txt)}
+
+/* ════════════════════════════════
+   PAGE: ZIELE
+════════════════════════════════ */
+.ziele-list{display:flex;flex-direction:column;gap:3px}
+.ziel{
+  display:grid;grid-template-columns:72px 1fr;
+  background:var(--panel);overflow:hidden;
+  border-left:3px solid transparent;
+  transition:border-color 0.3s,transform 0.35s cubic-bezier(.16,1,.3,1);
+  position:relative;
+}
+.ziel:hover{border-left-color:var(--gs);transform:translateX(5px)}
+.ziel-n{
+  display:flex;align-items:center;justify-content:center;
+  font-family:'Bebas Neue',sans-serif;font-size:52px;color:rgba(126,218,74,0.25);
+  background:var(--panel2);border-right:1px solid var(--bdr);
+  transition:color 0.3s;
+}
+.ziel:hover .ziel-n{color:var(--gs)}
+.ziel-body{padding:26px 30px}
+.ziel-body h3{
+  font-family:'Barlow Condensed',sans-serif;font-size:17px;font-weight:700;
+  letter-spacing:1px;text-transform:uppercase;color:var(--goldl);margin-bottom:10px;
+}
+.ziel-body ul{list-style:none}
+.ziel-body li{
+  font-size:14px;line-height:1.75;color:var(--txt);
+  padding-left:18px;position:relative;margin-bottom:2px;
+}
+.ziel-body li::before{
+  content:'▸';position:absolute;left:0;color:var(--gs);font-size:11px;
+  top:3px;
+}
+
+/* progress bar */
+.ziel-progress{
+  position:absolute;bottom:0;left:72px;right:0;height:2px;
+  background:var(--bdr);overflow:hidden;
+}
+.ziel-progress-bar{
+  height:100%;background:linear-gradient(90deg,var(--g),var(--gs));
+  transform:scaleX(0);transform-origin:left;
+  transition:transform 1.2s cubic-bezier(.16,1,.3,1);
+}
+.ziel.visible .ziel-progress-bar{transform:scaleX(1)}
+
+/* ════════════════════════════════
+   PAGE: RÄNGE
+════════════════════════════════ */
+.rang-header{
+  display:flex;gap:16px;align-items:center;margin-bottom:40px;flex-wrap:wrap;
+}
+.rang-filter{
+  font-family:'Barlow Condensed',sans-serif;font-size:11px;letter-spacing:2px;text-transform:uppercase;
+  padding:6px 16px;cursor:pointer;border:1px solid var(--bdr);background:transparent;color:var(--txtd);
+  transition:all 0.2s;
+}
+.rang-filter.active,.rang-filter:hover{background:var(--g);color:#fff;border-color:var(--g)}
+
+.rang-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(195px,1fr));gap:3px}
+.rc{
+  background:var(--panel);padding:18px 20px;position:relative;
+  border-left:2px solid transparent;
+  transition:border-color 0.25s,background 0.25s,transform 0.3s cubic-bezier(.16,1,.3,1);
+  animation:rankReveal 0.5s cubic-bezier(.16,1,.3,1) both;
+}
+.rc:hover{border-left-color:var(--gs);background:var(--panel2);transform:translateX(3px)}
+.rc.special{
+  background:linear-gradient(135deg,#2a5a10,#1e4a0c);
+  border:1px solid var(--goldl);border-left:3px solid var(--goldl);
+  grid-column:span 2;
+}
+@media(max-width:500px){.rc.special{grid-column:span 1}}
+.rc.special:hover{transform:none}
+.rnum{font-family:'Bebas Neue',sans-serif;font-size:11px;letter-spacing:2px;color:var(--txtd);margin-bottom:3px}
+.rtitle{font-family:'Barlow Condensed',sans-serif;font-size:15px;font-weight:700;color:var(--ink);margin-bottom:5px}
+.rc.special .rtitle{font-size:21px;color:var(--goldl)}
+.rdesc{font-size:11px;color:var(--txtd);line-height:1.5}
+.rbadge{position:absolute;top:12px;right:12px;font-size:16px}
+
+/* rank tier separator */
+.rang-tier{
+  grid-column:1/-1;
+  padding:10px 16px;margin:4px 0 2px;
+  font-family:'Barlow Condensed',sans-serif;font-size:10px;letter-spacing:4px;text-transform:uppercase;
+  color:var(--goldl);background:rgba(240,200,74,0.1);border-left:2px solid var(--goldl);
+}
+
+/* ════════════════════════════════
+   PAGE: UNITS
+════════════════════════════════ */
+.units-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(195px,1fr));gap:3px}
+.uc{
+  background:var(--panel);padding:30px 24px;text-align:center;cursor:pointer;
+  position:relative;overflow:hidden;
+  transition:transform 0.35s cubic-bezier(.16,1,.3,1),box-shadow 0.3s;
+}
+.uc::after{
+  content:'';position:absolute;inset:0;
+  background:linear-gradient(180deg,rgba(46,122,16,0) 60%,rgba(46,122,16,0.06));
+  opacity:0;transition:opacity 0.3s;
+}
+.uc:hover{transform:translateY(-6px);box-shadow:0 20px 60px rgba(0,0,0,0.4)}
+.uc:hover::after{opacity:1}
+.uc-icon{font-size:42px;margin-bottom:14px;display:block;transition:transform 0.4s cubic-bezier(.16,1,.3,1)}
+.uc:hover .uc-icon{transform:scale(1.15) rotate(-5deg)}
+.uc-name{font-family:'Bebas Neue',sans-serif;font-size:20px;color:var(--ink);letter-spacing:1px;margin-bottom:8px}
+.uc-desc{font-size:12px;color:var(--txtd);line-height:1.6}
+.uc-arrow{
+  position:absolute;bottom:12px;right:14px;
+  font-size:18px;color:var(--bdr);transition:color 0.2s,transform 0.3s;
+}
+.uc:hover .uc-arrow{color:var(--gs);transform:translateX(3px)}
+
+/* Unit modal */
+.umo{
+  display:none;position:fixed;inset:0;z-index:4000;
+  background:rgba(10,22,4,0.88);backdrop-filter:blur(8px);
+  align-items:center;justify-content:center;padding:24px;
+}
+.umo.open{display:flex}
+.um{
+  background:var(--panel2);
+  border:1px solid var(--bdr);border-top:3px solid var(--gs);
+  max-width:560px;width:100%;padding:40px;position:relative;
+  animation:slideUp 0.35s cubic-bezier(.16,1,.3,1) both;
+  box-shadow:0 32px 80px rgba(0,0,0,0.5);
+}
+.um-x{position:absolute;top:14px;right:16px;font-size:22px;cursor:pointer;color:var(--txtd);transition:color 0.2s,transform 0.2s}
+.um-x:hover{color:var(--red);transform:rotate(90deg)}
+.um-icon{font-size:52px;margin-bottom:10px}
+.um-title{font-family:'Bebas Neue',sans-serif;font-size:34px;color:var(--ink);margin-bottom:6px}
+.um-lead{font-family:'Barlow Condensed',sans-serif;font-size:11px;letter-spacing:4px;text-transform:uppercase;color:var(--goldl);margin-bottom:22px}
+.um-body{font-size:14px;line-height:1.8;color:var(--txt)}
+.um-body ul{list-style:none;margin-top:12px}
+.um-body li{padding-left:18px;position:relative;margin-bottom:5px}
+.um-body li::before{content:'▸';position:absolute;left:0;color:var(--gs);font-size:11px}
+
+/* ════════════════════════════════
+   PAGE: VISION
+════════════════════════════════ */
+.vision-hero{
+  background:var(--bg2);padding:100px 32px;text-align:center;position:relative;overflow:hidden;
+}
+.vision-hero::before{
+  content:'';position:absolute;inset:0;
+  background:radial-gradient(ellipse 75% 85% at 50% 50%,rgba(80,180,30,0.2),transparent 70%);
+}
+.vq{
+  position:relative;max-width:780px;margin:0 auto;
+  font-family:'Bebas Neue',sans-serif;font-size:clamp(30px,5.5vw,58px);
+  color:var(--ink);line-height:1.2;letter-spacing:1px;
+}
+.vq span{color:var(--g)}
+.vbullets{display:flex;flex-direction:column;gap:16px;max-width:700px;margin:56px auto 0;text-align:left}
+.vb{
+  display:flex;gap:18px;padding:22px 28px;
+  background:rgba(255,255,255,0.04);border:1px solid var(--bdr);
+  border-left:3px solid var(--gs);
+  transition:transform 0.3s cubic-bezier(.16,1,.3,1),box-shadow 0.3s;
+}
+.vb:hover{transform:translateX(6px);box-shadow:4px 0 20px rgba(46,122,16,0.08)}
+.vbi{font-size:26px;flex-shrink:0}
+.vb p{font-size:15px;line-height:1.75;color:var(--txt)}
+
+/* ════════════════════════════════
+   PAGE: LEGAL
+════════════════════════════════ */
+.legal-wrap{max-width:960px;margin:0 auto;padding:80px 32px}
+.legal-grid{display:grid;grid-template-columns:1fr 1fr;gap:32px;margin-bottom:40px}
+@media(max-width:680px){.legal-grid{grid-template-columns:1fr}}
+.lb h3{
+  font-family:'Bebas Neue',sans-serif;font-size:28px;color:var(--ink);
+  letter-spacing:1px;margin-bottom:16px;padding-bottom:10px;
+  border-bottom:1px solid var(--bdr);
+}
+.lb p,.lb li{font-size:13px;line-height:1.85;color:var(--txtd)}
+.lb ul{list-style:none}
+.lb li{padding-left:16px;position:relative;margin-bottom:4px}
+.lb li::before{content:'–';position:absolute;left:0;color:var(--gs)}
+.legal-warn{
+  background:rgba(176,40,28,0.18);border:1px solid rgba(255,107,91,0.35);
+  border-left:3px solid var(--red);padding:22px 26px;margin-bottom:16px;
+}
+.legal-warn p{font-size:13px;line-height:1.75;color:var(--txt)}
+.legal-warn strong{color:var(--red)}
+.legal-copy{text-align:center;font-size:11px;letter-spacing:1px;color:var(--txtd)}
+</style>
+</head>
+<body>
+
+<canvas id="particles"></canvas>
+<div id="toverlay"></div>
+<div id="sweep"></div>
+
+<!-- NAV -->
+<div id="nav-peek"></div>
+<nav id="main-nav">
+  <div class="nav-logo" onclick="nav('home')">
+    <div class="nav-logo-badge">⚔</div>
+    SANG
+  </div>
+  <ul class="nav-links">
+    <li><a href="#" onclick="nav('home');return false" data-page="home">Start</a></li>
+    <li><a href="#" onclick="nav('profil');return false" data-page="profil">Profil</a></li>
+    <li><a href="#" onclick="nav('ziele');return false" data-page="ziele">Ziele</a></li>
+    <li><a href="#" onclick="nav('rang');return false" data-page="rang">Ränge</a></li>
+    <li><a href="#" onclick="nav('units');return false" data-page="units">Units</a></li>
+    <li><a href="#" onclick="nav('vision');return false" data-page="vision">Vision</a></li>
+    <li><a href="#" onclick="nav('legal');return false" data-page="legal">Legal</a></li>
+  </ul>
+  <div class="nav-dots" id="nav-dots"></div>
+</nav>
+
+<!-- ══════════════════════════════════════════════
+     HOME
+══════════════════════════════════════════════ -->
+<div class="page" id="page-home">
+<section class="hero">
+  <div class="hero-bg"></div>
+  <div class="hero-grid"></div>
+  <div class="orb orb1"></div>
+  <div class="orb orb2"></div>
+  <div class="orb orb3"></div>
+  <div style="position:relative;z-index:1">
+    <div class="hero-badge">
+      <span class="hero-badge-dot"></span>
+      San Andreas National Guard — Offizielle Bewerbung
+    </div>
+    <div class="hero-eagle">🦅</div>
+    <div class="hero-title-wrap">
+      <h1 class="hero-title glitch" data-text="GENERAL OF">GENERAL OF<span class="hero-title-sub">THE ARMY</span></h1>
+    </div>
+    <div class="hero-typed"><span id="typed-text"></span><span class="cursor"></span></div>
+    <div class="hero-divider"></div>
+    <div class="hero-stats">
+      <div class="hero-stat"><span class="v" data-count="5">5</span><span class="l">Units</span></div>
+      <div class="hero-stat"><span class="v" data-count="24">24</span><span class="l">Ränge</span></div>
+    </div>
+    <div class="hero-cta">
+      <div class="cta-btn cta-primary" onclick="nav('profil')"><span>👤 Profil lesen</span></div>
+      <div class="cta-btn cta-secondary" onclick="nav('rang')"><span>🎖 Rangsystem</span></div>
+    </div>
+  </div>
+  <div class="scroll-hint"><span>Scroll</span><div class="scroll-arrow"></div></div>
+</section>
+<footer>
+  <div class="ftitle">SANG – BEWERBUNG</div>
+  <div class="fsub">San Andreas National Guard &nbsp;·&nbsp; Majestic RP</div>
+  <div class="fsig">Mit kameradschaftlichen Grüßen,<br><span>IC:</span> Olaf Schafe &nbsp;·&nbsp; <span>OOC:</span> Tom &nbsp;·&nbsp; <span>Discord:</span> Tom Alter</div>
+  <div class="fpages">
+    <button class="fpbtn" onclick="nav('profil')">Profil</button>
+    <button class="fpbtn" onclick="nav('ziele')">Ziele</button>
+    <button class="fpbtn" onclick="nav('rang')">Ränge</button>
+    <button class="fpbtn" onclick="nav('units')">Units</button>
+    <button class="fpbtn" onclick="nav('vision')">Vision</button>
+    <button class="fpbtn" onclick="nav('legal')">Impressum</button>
+  </div>
+</footer>
+</div>
+
+<!-- ══════════════════════════════════════════════
+     PROFIL
+══════════════════════════════════════════════ -->
+<div class="page" id="page-profil">
+<div class="breadcrumb">SANG &nbsp;›&nbsp; <span>Profil</span></div>
+<section class="section">
+  <div class="reveal">
+    <p class="stag">OOC – Über mich</p>
+    <h2 class="stitle">Wer steckt hinter <em>Olaf Schafe?</em></h2>
+  </div>
+  <div class="about-grid">
+    <div class="about-card ac reveal-left" style="transition-delay:0.05s">
+      <div class="about-card-num">01</div>
+      <div class="aci">👤</div>
+      <h3>Persönliches</h3>
+      <p>Ich bin Tom, 17 Jahre alt, und spiele seit über einem Jahr und fünf Monaten aktiv auf Majestic RP. In dieser Zeit habe ich umfangreiche Erfahrungen in verschiedenen Fraktionen gesammelt – sowohl organisatorisch als auch menschlich.</p>
+    </div>
+    <div class="about-card ac reveal-right" style="transition-delay:0.1s">
+      <div class="about-card-num">02</div>
+      <div class="aci">🎖</div>
+      <h3>Meine Werte</h3>
+      <p>Respekt, Loyalität und Motivation sind die Grundpfeiler meiner Einstellung. Für mich steht immer der Mensch hinter dem Charakter im Vordergrund. Disziplin und Spaß schließen sich nicht aus – sie ergänzen sich.</p>
+    </div>
+    <div class="about-card ac reveal-left" style="transition-delay:0.15s">
+      <div class="about-card-num">03</div>
+      <div class="aci">🧠</div>
+      <h3>Stärken</h3>
+      <p>Verantwortung übernehmen, Teams leiten, Systeme strukturieren und Spieler fördern – das ist mein Antrieb. Führung durch Vorbild, nicht durch Befehl. Ich lebe, was ich verlange.</p>
+    </div>
+    <div class="about-card ac reveal-right" style="transition-delay:0.2s">
+      <div class="about-card-num">04</div>
+      <div class="aci">🎯</div>
+      <h3>Warum SANG?</h3>
+      <p>Die SANG verkörpert militärische Stärke, Ordnung und Organisation – aber ihre Kraft ist nur so groß wie die Struktur dahinter. Genau hier will ich ansetzen und einen bleibenden Unterschied hinterlassen.</p>
+    </div>
+  </div>
+</section>
+<div class="sep"></div>
+<footer><div class="fpages">
+  <button class="fpbtn" onclick="nav('home')">← Start</button>
+  <button class="fpbtn" onclick="nav('ziele')">Ziele →</button>
+</div></footer>
+</div>
+
+<!-- ══════════════════════════════════════════════
+     ZIELE
+══════════════════════════════════════════════ -->
+<div class="page" id="page-ziele">
+<div class="breadcrumb">SANG &nbsp;›&nbsp; <span>Ziele</span></div>
+<section class="section">
+  <div class="reveal">
+    <p class="stag">Führungsplan</p>
+    <h2 class="stitle">Meine <em>Ziele</em> als Leader</h2>
+  </div>
+  <div class="ziele-list">
+    <div class="ziel reveal" style="transition-delay:0.05s">
+      <div class="ziel-n">01</div>
+      <div class="ziel-body">
+        <h3>Strukturierter Wiederaufbau der SANG</h3>
+        <ul>
+          <li>Einführung eines klar definierten Rang- und Ausbildungssystems</li>
+          <li>Reaktivierung und Schulung bestehender Mitglieder</li>
+          <li>Etablierung von festen Units: Infantry, Air, Medical, TRADOC, Black Ops</li>
+        </ul>
+      </div>
+      <div class="ziel-progress"><div class="ziel-progress-bar" style="transform:scaleX(0.9)"></div></div>
+    </div>
+    <div class="ziel reveal" style="transition-delay:0.1s">
+      <div class="ziel-n">02</div>
+      <div class="ziel-body">
+        <h3>Förderung von qualitativem Roleplay</h3>
+        <ul>
+          <li>Militärisches RP mit klarer Hierarchie und emotionalem Tiefgang</li>
+          <li>Förderung von Charakterentwicklung, Loyalität und Teamgeist</li>
+          <li>Zusammenarbeit mit LSPD, FIB, LSCSD und Government</li>
+        </ul>
+      </div>
+      <div class="ziel-progress"><div class="ziel-progress-bar" style="transform:scaleX(0.85)"></div></div>
+    </div>
+    <div class="ziel reveal" style="transition-delay:0.15s">
+      <div class="ziel-n">03</div>
+      <div class="ziel-body">
+        <h3>Stärkere OOC-Struktur &amp; Kommunikation</h3>
+        <ul>
+          <li>Einführung regelmäßiger Meetings und Feedbackrunden</li>
+          <li>Förderung von Führungskompetenz in den Offiziersrängen</li>
+          <li>Sicherstellung eines respektvollen Miteinanders</li>
+        </ul>
+      </div>
+      <div class="ziel-progress"><div class="ziel-progress-bar" style="transform:scaleX(0.95)"></div></div>
+    </div>
+    <div class="ziel reveal" style="transition-delay:0.2s">
+      <div class="ziel-n">04</div>
+      <div class="ziel-body">
+        <h3>Aktivität &amp; Repräsentation</h3>
+        <ul>
+          <li>Gezielte Rekrutierungen, Trainings und Einsätze</li>
+          <li>Sichtbarkeit durch koordinierte Patrouillen und Events</li>
+          <li>Öffentlichkeitswirksames Auftreten im Einklang mit den Serverregeln</li>
+        </ul>
+      </div>
+      <div class="ziel-progress"><div class="ziel-progress-bar" style="transform:scaleX(0.8)"></div></div>
+    </div>
+  </div>
+</section>
+<footer><div class="fpages">
+  <button class="fpbtn" onclick="nav('profil')">← Profil</button>
+  <button class="fpbtn" onclick="nav('rang')">Ränge →</button>
+</div></footer>
+</div>
+
+<!-- ══════════════════════════════════════════════
+     RÄNGE
+══════════════════════════════════════════════ -->
+<div class="page" id="page-rang">
+<div class="breadcrumb">SANG &nbsp;›&nbsp; <span>Rangsystem</span></div>
+<section class="section">
+  <div class="reveal">
+    <p class="stag">Hierarchie</p>
+    <h2 class="stitle">Das <em>Rangsystem</em> der SANG</h2>
+  </div>
+  <div class="rang-grid" id="rang-grid">
+    <div class="rang-tier">— Einsteiger</div>
+    <div class="rc reveal" style="animation-delay:0.02s"><div class="rbadge">🔴</div><div class="rnum">Rang 1</div><div class="rtitle">Suspendiert</div><div class="rdesc">Kein aktiver Dienst.</div></div>
+    <div class="rc reveal" style="animation-delay:0.04s"><div class="rnum">Rang 2</div><div class="rtitle">Private</div><div class="rdesc">Einstieg in die SANG.</div></div>
+    <div class="rc reveal" style="animation-delay:0.06s"><div class="rnum">Rang 3</div><div class="rtitle">Private First Class</div><div class="rdesc">Grundausbildung abgeschlossen.</div></div>
+    <div class="rc reveal" style="animation-delay:0.08s"><div class="rnum">Rang 4</div><div class="rtitle">Specialist</div><div class="rdesc">Praktikum in einer Unit möglich.</div></div>
+    <div class="rc reveal" style="animation-delay:0.10s"><div class="rnum">Rang 5</div><div class="rtitle">Corporal</div><div class="rdesc">Vollwertiger Soldat, Streifendienst erlaubt.</div></div>
+    <div class="rang-tier">— Unteroffiziere</div>
+    <div class="rc reveal" style="animation-delay:0.12s"><div class="rnum">Rang 6</div><div class="rtitle">Sergeant</div><div class="rdesc">Erste Führungsaufgaben.</div></div>
+    <div class="rc reveal" style="animation-delay:0.14s"><div class="rnum">Rang 7</div><div class="rtitle">Staff Sergeant</div><div class="rdesc">Ausgebildeter Soldat mit Erfahrung.</div></div>
+    <div class="rc reveal" style="animation-delay:0.16s"><div class="rnum">Rang 8</div><div class="rtitle">Sergeant First Class</div><div class="rdesc">Erfahrener Soldat.</div></div>
+    <div class="rc reveal" style="animation-delay:0.18s"><div class="rnum">Rang 9</div><div class="rtitle">Master Sergeant</div><div class="rdesc">Erfahrener Soldat.</div></div>
+    <div class="rc reveal" style="animation-delay:0.20s"><div class="rnum">Rang 10</div><div class="rtitle">First Sergeant</div><div class="rdesc">Erfahrener Soldat.</div></div>
+    <div class="rc reveal" style="animation-delay:0.22s"><div class="rnum">Rang 11</div><div class="rtitle">Sergeant Major</div><div class="rdesc">Voll ausgebildeter Soldat.</div></div>
+    <div class="rc reveal" style="animation-delay:0.24s"><div class="rnum">Rang 12</div><div class="rtitle">Command Sergeant Major</div><div class="rdesc">Kann Truppen bei Einsätzen leiten.</div></div>
+    <div class="rc reveal" style="animation-delay:0.26s"><div class="rnum">Rang 13</div><div class="rtitle">Warrant Officer</div><div class="rdesc">Erfahrener Soldat.</div></div>
+    <div class="rc reveal" style="animation-delay:0.28s"><div class="rnum">Rang 14</div><div class="rtitle">Chief Warrant Officer</div><div class="rdesc">Höchster Unteroffiziersrang, Bindeglied zu Offizieren.</div></div>
+    <div class="rang-tier">— Offiziere</div>
+    <div class="rc reveal" style="animation-delay:0.30s"><div class="rnum">Rang 15</div><div class="rtitle">Second Lieutenant</div><div class="rdesc">Unterstützt den Unit Leader.</div></div>
+    <div class="rc reveal" style="animation-delay:0.32s"><div class="rnum">Rang 16</div><div class="rtitle">First Lieutenant</div><div class="rdesc">Strategische Unterstützung.</div></div>
+    <div class="rc reveal" style="animation-delay:0.34s"><div class="rnum">Rang 17</div><div class="rtitle">Captain</div><div class="rdesc">Ausbilder einer Unit.</div></div>
+    <div class="rc reveal" style="animation-delay:0.36s"><div class="rnum">Rang 18</div><div class="rtitle">Major</div><div class="rdesc">Ausbildungsleiter einer Unit.</div></div>
+    <div class="rc reveal" style="animation-delay:0.38s"><div class="rnum">Rang 19</div><div class="rtitle">Lieutenant Colonel</div><div class="rdesc">Stellvertr. Abteilungsleitung.</div></div>
+    <div class="rc reveal" style="animation-delay:0.40s"><div class="rnum">Rang 20</div><div class="rtitle">Colonel</div><div class="rdesc">Leitung einer Abteilung.</div></div>
+    <div class="rang-tier">— Generalstab</div>
+    <div class="rc reveal" style="animation-delay:0.42s"><div class="rnum">Rang 21</div><div class="rtitle">Major General</div><div class="rdesc">Verbindung Generalstab ↔ Abteilungen.</div></div>
+    <div class="rc reveal" style="animation-delay:0.44s"><div class="rnum">Rang 22</div><div class="rtitle">Lieutenant General</div><div class="rdesc">Unterstützung des Generals.</div></div>
+    <div class="rc reveal" style="animation-delay:0.46s"><div class="rnum">Rang 23</div><div class="rtitle">General</div><div class="rdesc">Stellvertretender Leiter der SANG.</div></div>
+    <div class="rc special reveal" style="animation-delay:0.5s">
+      <div class="rbadge">⭐</div>
+      <div class="rnum">Rang 24 — Höchster Befehlshaber</div>
+      <div class="rtitle">General of the Army</div>
+      <div class="rdesc">Oberster Befehlshaber der SANG. Träger: <strong style="color:var(--gold)">Olaf Schafe</strong></div>
+    </div>
+  </div>
+</section>
+<footer><div class="fpages">
+  <button class="fpbtn" onclick="nav('ziele')">← Ziele</button>
+  <button class="fpbtn" onclick="nav('units')">Units →</button>
+</div></footer>
+</div>
+
+<!-- ══════════════════════════════════════════════
+     UNITS
+══════════════════════════════════════════════ -->
+<div class="page" id="page-units">
+<div class="breadcrumb">SANG &nbsp;›&nbsp; <span>Units</span></div>
+<section class="section">
+  <div class="reveal">
+    <p class="stag">Organisationsstruktur</p>
+    <h2 class="stitle">Die <em>Units</em> der SANG</h2>
+    <p style="font-size:13px;color:var(--txtd);margin-bottom:28px;margin-top:-30px">Klicke auf eine Unit für Details.</p>
+  </div>
+  <div class="units-grid">
+    <div class="uc reveal" onclick="openUnit('infantry')" style="transition-delay:0.05s">
+      <span class="uc-icon">⚔️</span>
+      <div class="uc-name">Infantry Unit</div>
+      <div class="uc-desc">Bodenoperationen, Sicherung, Fahrzeugpatrouillen</div>
+      <span class="uc-arrow">→</span>
+    </div>
+    <div class="uc reveal" onclick="openUnit('air')" style="transition-delay:0.1s">
+      <span class="uc-icon">✈️</span>
+      <div class="uc-name">Air Force Unit</div>
+      <div class="uc-desc">Luftaufklärung, Transportflüge, Evakuierungen</div>
+      <span class="uc-arrow">→</span>
+    </div>
+    <div class="uc reveal" onclick="openUnit('medical')" style="transition-delay:0.15s">
+      <span class="uc-icon">🏥</span>
+      <div class="uc-name">Medical Unit</div>
+      <div class="uc-desc">Sanitätsdienst, Rettungseinsätze, Erstversorgung</div>
+      <span class="uc-arrow">→</span>
+    </div>
+    <div class="uc reveal" onclick="openUnit('tradoc')" style="transition-delay:0.2s">
+      <span class="uc-icon">📚</span>
+      <div class="uc-name">TRADOC Unit</div>
+      <div class="uc-desc">Ausbildung, Prüfungen, Schulungen</div>
+      <span class="uc-arrow">→</span>
+    </div>
+    <div class="uc reveal" onclick="openUnit('blackops')" style="transition-delay:0.25s">
+      <span class="uc-icon">🎯</span>
+      <div class="uc-name">Black Ops Unit</div>
+      <div class="uc-desc">Strategische Leitung, Planung, Koordination</div>
+      <span class="uc-arrow">→</span>
+    </div>
+  </div>
+  <p style="margin-top:22px;font-size:13px;color:var(--txtd);max-width:700px">
+    Jede Unit wird durch einen <strong style="color:var(--goldl)">Lieutenant Colonel</strong> oder <strong style="color:var(--goldl)">Colonel</strong> geleitet, der direkt dem Major General oder Generalstab unterstellt ist.
+  </p>
+</section>
+<footer><div class="fpages">
+  <button class="fpbtn" onclick="nav('rang')">← Ränge</button>
+  <button class="fpbtn" onclick="nav('vision')">Vision →</button>
+</div></footer>
+</div>
+
+<!-- Unit Modal -->
+<div class="umo" id="umo" onclick="closeUnit(event)">
+  <div class="um">
+    <div class="um-x" onclick="closeUnit(null,true)">✕</div>
+    <div class="um-icon" id="um-icon"></div>
+    <div class="um-title" id="um-title"></div>
+    <div class="um-lead" id="um-lead"></div>
+    <div class="um-body" id="um-body"></div>
+  </div>
+</div>
+
+<!-- ══════════════════════════════════════════════
+     VISION
+══════════════════════════════════════════════ -->
+<div class="page" id="page-vision">
+<div class="breadcrumb">SANG &nbsp;›&nbsp; <span>Vision</span></div>
+<div class="vision-hero">
+  <p class="stag reveal" style="justify-content:center">Zukunft der SANG</p>
+  <div class="vq reveal">Ein Symbol für <span>Stärke,</span><br>Ordnung und <span>Zusammenhalt</span><br>in San Andreas.</div>
+  <div class="vbullets">
+    <div class="vb reveal" style="transition-delay:0.1s">
+      <div class="vbi">🏆</div>
+      <p>Die SANG soll ein <strong>Vorbild für Disziplin, Organisation und Loyalität</strong> sein – eine Macht, die jeder Spieler respektiert, ob Verbündeter oder Gegner.</p>
+    </div>
+    <div class="vb reveal" style="transition-delay:0.18s">
+      <div class="vbi">🌱</div>
+      <p><strong>Neue Spieler</strong> sollen hier lernen, was Teamarbeit und RP-Struktur bedeutet. Veteranen sollen führen, lehren und inspirieren.</p>
+    </div>
+    <div class="vb reveal" style="transition-delay:0.26s">
+      <div class="vbi">💛</div>
+      <p>Jeder Soldat soll wissen, dass er <strong>gebraucht wird</strong>, dass seine Arbeit gesehen wird – und dass er Teil von etwas Größerem ist.</p>
+    </div>
+  </div>
+</div>
+<footer>
+  <div class="ftitle">SANG – BEWERBUNG</div>
+  <div class="fsub">San Andreas National Guard &nbsp;·&nbsp; Majestic RP</div>
+  <div class="fsig">Mit kameradschaftlichen Grüßen,<br><span>IC:</span> Olaf Schafe &nbsp;·&nbsp; <span>OOC:</span> Tom &nbsp;·&nbsp; <span>Discord:</span> Tom Alter</div>
+  <div class="fpages">
+    <button class="fpbtn" onclick="nav('units')">← Units</button>
+    <button class="fpbtn" onclick="nav('legal')">Impressum →</button>
+  </div>
+</footer>
+</div>
+
+<!-- ══════════════════════════════════════════════
+     LEGAL
+══════════════════════════════════════════════ -->
+<div class="page" id="page-legal">
+<div class="breadcrumb">SANG &nbsp;›&nbsp; <span>Impressum &amp; Datenschutz</span></div>
+<div class="legal-wrap">
+  <div class="reveal">
+    <p class="stag">Rechtliches</p>
+    <h2 class="stitle">Impressum &amp; <em>Datenschutz</em></h2>
+  </div>
+  <div class="legal-grid">
+    <div class="lb reveal-left">
+      <h3>Impressum</h3>
+      <p><strong style="color:var(--ink)">Verantwortlich für den Inhalt:</strong></p>
+      <ul>
+        <li>Name (OOC): Tom</li>
+        <li>Name (IC): Olaf Schafe</li>
+        <li>Discord: echodesvergessens</li>
+        <li>Plattform: Majestic RP</li>
+        <li>Fraktion: San Andreas National Guard</li>
+      </ul>
+      <br>
+      <p>Diese Seite wurde ausschließlich für die Bewerbung auf die Leader-Position der SANG auf Majestic RP erstellt. Alle Inhalte sind fiktional.</p>
+    </div>
+    <div class="lb reveal-right">
+      <h3>Datenschutz</h3>
+      <p><strong style="color:var(--ink)">Datenerhebung:</strong></p>
+      <p>Diese Website erhebt, speichert oder verarbeitet keinerlei personenbezogene Daten. Es werden keine Cookies gesetzt und kein Tracking durchgeführt.</p>
+      <br>
+      <p><strong style="color:var(--ink)">Externe Dienste:</strong></p>
+      <ul><li>Google Fonts – Datenschutzbestimmungen von Google LLC</li></ul>
+      <br>
+      <p><strong style="color:var(--ink)">Kontakt:</strong> Discord: echodesvergessens</p>
+    </div>
+  </div>
+  <div class="legal-warn reveal">
+    <p>
+      <strong>⚠ Urheberrechtshinweis &amp; Kopierverbot:</strong><br>
+      Alle auf dieser Website veröffentlichten Inhalte – Texte, Konzepte, Strukturen, Rangsysteme, Organisationspläne und das Bewerbungskonzept – sind geistiges Eigentum von <strong>Tom (OOC) / Olaf Schafe (IC)</strong> und urheberrechtlich geschützt.<br><br>
+      Jede unerlaubte Vervielfältigung, Übernahme oder Weitergabe – auch auszugsweise – ist ohne ausdrückliche schriftliche Genehmigung untersagt.<br><br>
+      <strong>Bei widerrechtlicher Kopierung oder unerlaubter Nutzung werden rechtliche Schritte eingeleitet.</strong>
+    </p>
+  </div>
+  <p class="legal-copy reveal">&copy; 2026 Tom / Olaf Schafe &nbsp;·&nbsp; San Andreas National Guard &nbsp;·&nbsp; Alle Rechte vorbehalten.</p>
+</div>
+<footer><div class="fpages">
+  <button class="fpbtn" onclick="nav('vision')">← Vision</button>
+  <button class="fpbtn" onclick="nav('home')">↑ Start</button>
+</div></footer>
+</div>
+
+<!-- COPY TOAST -->
+<div id="ctost">⚠ Kopieren ist nicht gestattet. Bei Verstoß werden rechtliche Schritte eingeleitet.</div>
+
+<script>
+/* ══════════════════════════════════
+   PARTICLES
+══════════════════════════════════ */
+(function(){
+  const c=document.getElementById('particles');
+  const ctx=c.getContext('2d');
+  let W,H,pts=[],mouse={x:-999,y:-999,down:false};
+  const CONNECT=130,REPEL=90,ATTRACT=160,N=65;
+
+  function resize(){W=c.width=innerWidth;H=c.height=innerHeight}
+  resize();window.addEventListener('resize',resize);
+
+  for(let i=0;i<N;i++) pts.push({
+    x:Math.random()*W, y:Math.random()*H,
+    vx:(Math.random()-0.5)*0.35, vy:(Math.random()-0.5)*0.35,
+    ox:0,oy:0,
+    r:Math.random()*2+0.7,
+    a:Math.random(),
+    hue:Math.random()*30  // slight hue variation
+  });
+
+  // Mouse / Touch
+  function setPointer(x,y,down){mouse.x=x;mouse.y=y;if(down!==undefined)mouse.down=down}
+  window.addEventListener('mousemove',e=>setPointer(e.clientX,e.clientY));
+  window.addEventListener('mousedown',e=>setPointer(e.clientX,e.clientY,true));
+  window.addEventListener('mouseup',()=>mouse.down=false);
+
+  window.addEventListener('touchmove',e=>{
+    const t=e.touches[0];setPointer(t.clientX,t.clientY,true);
+    e.preventDefault();
+  },{passive:false});
+  window.addEventListener('touchstart',e=>{
+    const t=e.touches[0];setPointer(t.clientX,t.clientY,true);
+    // spawn burst on touch
+    for(let i=0;i<8;i++){
+      const angle=Math.random()*Math.PI*2;
+      const spd=1.5+Math.random()*2;
+      pts.push({
+        x:t.clientX,y:t.clientY,
+        vx:Math.cos(angle)*spd,vy:Math.sin(angle)*spd,
+        ox:0,oy:0,r:Math.random()*2+1,a:Math.random(),hue:Math.random()*30,
+        life:1,decay:0.015+Math.random()*0.01
+      });
+    }
+    // trim to max
+    if(pts.length>N+40) pts.splice(N,pts.length-N);
+  });
+  window.addEventListener('touchend',()=>mouse.down=false);
+
+  // Click burst
+  window.addEventListener('click',e=>{
+    for(let i=0;i<12;i++){
+      const angle=Math.random()*Math.PI*2;
+      const spd=2+Math.random()*3;
+      pts.push({
+        x:e.clientX,y:e.clientY,
+        vx:Math.cos(angle)*spd,vy:Math.sin(angle)*spd,
+        ox:0,oy:0,r:Math.random()*2.5+0.5,a:0.9+Math.random()*0.1,hue:Math.random()*30,
+        life:1,decay:0.018+Math.random()*0.012
+      });
+    }
+    if(pts.length>N+50) pts.splice(N,pts.length-N);
+  });
+
+  function draw(){
+    ctx.clearRect(0,0,W,H);
+
+    // Mouse ripple
+    if(mouse.down){
+      const rg=ctx.createRadialGradient(mouse.x,mouse.y,0,mouse.x,mouse.y,80);
+      rg.addColorStop(0,'rgba(126,218,74,0.12)');
+      rg.addColorStop(1,'rgba(126,218,74,0)');
+      ctx.beginPath();ctx.arc(mouse.x,mouse.y,80,0,Math.PI*2);
+      ctx.fillStyle=rg;ctx.fill();
+    }
+
+    for(let i=pts.length-1;i>=0;i--){
+      const p=pts[i];
+
+      // lifecycle for burst particles
+      if(p.life!==undefined){
+        p.life-=p.decay;
+        p.vx*=0.97;p.vy*=0.97;
+        if(p.life<=0){pts.splice(i,1);continue}
+      }
+
+      // Mouse interaction
+      const mdx=p.x-mouse.x, mdy=p.y-mouse.y;
+      const md=Math.sqrt(mdx*mdx+mdy*mdy)||1;
+      if(md<REPEL){
+        // repel
+        const f=(1-md/REPEL)*0.8;
+        p.vx+=mdx/md*f;p.vy+=mdy/md*f;
+      } else if(md<ATTRACT&&mouse.down){
+        // attract on press/hold
+        const f=(1-md/ATTRACT)*0.3;
+        p.vx-=mdx/md*f;p.vy-=mdy/md*f;
+      }
+
+      // speed limit
+      const spd=Math.sqrt(p.vx*p.vx+p.vy*p.vy);
+      if(spd>3){p.vx=p.vx/spd*3;p.vy=p.vy/spd*3}
+
+      p.x+=p.vx;p.y+=p.vy;
+      if(p.x<0)p.x=W;if(p.x>W)p.x=0;
+      if(p.y<0)p.y=H;if(p.y>H)p.y=0;
+
+      const alpha=(p.life!==undefined?p.life:1)*(0.25+p.a*0.35);
+      const g=155+Math.floor(p.hue*2);
+      ctx.beginPath();
+      ctx.arc(p.x,p.y,p.r,0,Math.PI*2);
+      ctx.fillStyle=`rgba(${80+p.hue},${g},${50+p.hue},${alpha})`;
+      ctx.fill();
+    }
+
+    // Connections
+    for(let i=0;i<Math.min(pts.length,N);i++){
+      for(let j=i+1;j<Math.min(pts.length,N);j++){
+        const dx=pts[i].x-pts[j].x,dy=pts[i].y-pts[j].y;
+        const d=Math.sqrt(dx*dx+dy*dy);
+        if(d<CONNECT){
+          ctx.beginPath();
+          ctx.moveTo(pts[i].x,pts[i].y);
+          ctx.lineTo(pts[j].x,pts[j].y);
+          ctx.strokeStyle=`rgba(126,218,74,${0.18*(1-d/CONNECT)})`;
+          ctx.lineWidth=0.6;ctx.stroke();
+        }
+      }
+      // connect to mouse
+      const mdx=pts[i].x-mouse.x,mdy=pts[i].y-mouse.y;
+      const md=Math.sqrt(mdx*mdx+mdy*mdy);
+      if(md<CONNECT){
+        ctx.beginPath();
+        ctx.moveTo(pts[i].x,pts[i].y);
+        ctx.lineTo(mouse.x,mouse.y);
+        ctx.strokeStyle=`rgba(175,240,128,${0.3*(1-md/CONNECT)})`;
+        ctx.lineWidth=0.8;ctx.stroke();
+      }
+    }
+
+    requestAnimationFrame(draw);
+  }
+  draw();
+})();
+
+/* ══════════════════════════════════
+   AUTO-HIDE NAV
+══════════════════════════════════ */
+(function(){
+  const nav=document.getElementById('main-nav');
+  const peek=document.getElementById('nav-peek');
+  let lastY=0,hideTimer,hidden=false;
+
+  function hideNav(){
+    if(!nav.matches(':hover')){
+      nav.classList.add('hidden');
+      hidden=true;
+    }
+  }
+  function showNav(){
+    nav.classList.remove('hidden');
+    hidden=false;
+    clearTimeout(hideTimer);
+    hideTimer=setTimeout(hideNav,2800);
+  }
+
+  window.addEventListener('scroll',()=>{
+    const y=window.scrollY;
+    if(y<80){showNav();return}
+    if(y<lastY){showNav()}
+    else{
+      clearTimeout(hideTimer);
+      hideTimer=setTimeout(hideNav,1600);
+    }
+    lastY=y;
+  },{passive:true});
+
+  nav.addEventListener('mouseenter',()=>{clearTimeout(hideTimer);nav.classList.remove('hidden')});
+  nav.addEventListener('mouseleave',()=>{hideTimer=setTimeout(hideNav,1400)});
+  peek.addEventListener('mouseenter',showNav);
+
+  // start visible then auto-hide after 3s
+  hideTimer=setTimeout(hideNav,3000);
+})();
+
+/* ══════════════════════════════════
+   NAV DOTS
+══════════════════════════════════ */
+const PAGES=['home','profil','ziele','rang','units','vision','legal'];
+const dotsEl=document.getElementById('nav-dots');
+PAGES.forEach(p=>{
+  const d=document.createElement('div');
+  d.className='nav-dot';d.dataset.p=p;
+  d.title=p.charAt(0).toUpperCase()+p.slice(1);
+  d.onclick=()=>nav(p);
+  dotsEl.appendChild(d);
+});
+
+/* ══════════════════════════════════
+   ROUTER
+══════════════════════════════════ */
+let current='home';
+
+function nav(id){
+  if(id===current)return;
+  const ov=document.getElementById('toverlay');
+  const sw=document.getElementById('sweep');
+  ov.classList.add('show');
+  setTimeout(()=>{
+    showPage(id);
+    ov.classList.remove('show');
+    window.scrollTo(0,0);
+    // sweep effect
+    sw.classList.remove('run');
+    void sw.offsetWidth;
+    sw.classList.add('run');
+  },210);
+}
+
+function showPage(id){
+  PAGES.forEach(p=>{
+    const el=document.getElementById('page-'+p);
+    el.classList.remove('active','page-enter');
+  });
+  document.querySelectorAll('.nav-links a').forEach(a=>a.classList.toggle('active',a.dataset.page===id));
+  document.querySelectorAll('.nav-dot').forEach(d=>d.classList.toggle('active',d.dataset.p===id));
+  const tgt=document.getElementById('page-'+id);
+  tgt.classList.add('active');
+  current=id;
+  requestAnimationFrame(()=>{
+    tgt.classList.add('page-enter');
+    initReveal(tgt);
+    // animate ziel progress bars
+    if(id==='ziele') setTimeout(()=>{
+      tgt.querySelectorAll('.ziel-progress-bar').forEach(b=>{
+        const sx=b.style.transform;b.style.transform='scaleX(0)';
+        setTimeout(()=>b.style.transform=sx,100);
+      });
+    },300);
+    // counter animation
+    if(id==='home') animateCounters();
+  });
+}
+
+function initReveal(container){
+  const all=container.querySelectorAll('.reveal,.reveal-left,.reveal-right,.reveal-scale');
+  all.forEach(el=>el.classList.remove('visible'));
+  const io=new IntersectionObserver(entries=>{
+    entries.forEach(e=>{
+      if(e.isIntersecting){e.target.classList.add('visible');io.unobserve(e.target)}
+    });
+  },{threshold:0.08});
+  all.forEach(el=>io.observe(el));
+}
+
+/* ══════════════════════════════════
+   TYPEWRITER
+══════════════════════════════════ */
+const phrases=[
+  'Olaf Schafe — Leader Bewerbung',
+  'Disziplin · Loyalität · Stärke',
+  'General of the Army',
+  'Majestic RP — SANG'
+];
+let pi=0,ci=0,del=false,typed='';
+function typeLoop(){
+  const el=document.getElementById('typed-text');
+  if(!el)return;
+  const tgt=phrases[pi];
+  if(!del){
+    typed=tgt.slice(0,++ci);
+    if(ci===tgt.length){del=true;setTimeout(typeLoop,1800);return}
+  } else {
+    typed=tgt.slice(0,--ci);
+    if(ci===0){del=false;pi=(pi+1)%phrases.length;setTimeout(typeLoop,400);return}
+  }
+  el.textContent=typed;
+  setTimeout(typeLoop,del?42:68);
+}
+setTimeout(typeLoop,1600);
+
+/* ══════════════════════════════════
+   COUNTER ANIMATION
+══════════════════════════════════ */
+function animateCounters(){
+  document.querySelectorAll('.hero-stat .v[data-count]').forEach(el=>{
+    const target=+el.dataset.count;
+    let start=0;
+    const step=()=>{
+      start+=Math.ceil(target/20);
+      if(start>=target){el.textContent=target;return}
+      el.textContent=start;
+      requestAnimationFrame(step);
+    };
+    requestAnimationFrame(step);
+  });
+}
+
+/* ══════════════════════════════════
+   UNIT MODAL
+══════════════════════════════════ */
+const UD={
+  infantry:{icon:'⚔️',title:'Infantry Unit',lead:'Bodenoperationen',body:`<p>Das Rückgrat der SANG – alle bodenbezogenen Aufgaben im Stadtgebiet und Gelände.</p><ul><li>Stadt- und Geländesicherung</li><li>Fahrzeugpatrouillen und Straßenkontrolle</li><li>Unterstützung bei Großeinsätzen</li><li>Zusammenarbeit mit LSPD und LSCSD</li></ul><p style="margin-top:12px">Geführt ab <strong>Lieutenant Colonel</strong>.</p>`},
+  air:{icon:'✈️',title:'Air Force Unit',lead:'Luftoperationen',body:`<p>Sicherung des Luftraums und Luftunterstützung für Bodentruppen.</p><ul><li>Luftaufklärung und Überwachung</li><li>Transportflüge für Personal und Material</li><li>Such- und Rettungsflüge</li><li>Koordination mit Infantry</li></ul><p style="margin-top:12px">Geführt ab <strong>Lieutenant Colonel</strong>.</p>`},
+  medical:{icon:'🏥',title:'Medical Unit',lead:'Sanitätsdienst',body:`<p>Medizinische Versorgung aller Soldaten und Zivilisten im Einsatz.</p><ul><li>Erstversorgung und Sanitätsdienst im Feld</li><li>Rettungseinsätze und Evakuierung</li><li>Medizinische Ausbildung innerhalb der SANG</li><li>Zusammenarbeit mit zivilen Diensten</li></ul><p style="margin-top:12px">Geführt ab <strong>Lieutenant Colonel</strong>.</p>`},
+  tradoc:{icon:'📚',title:'TRADOC Unit',lead:'Training & Doctrine',body:`<p>Ausbildung aller Rekruten und Weiterbildung bestehender Soldaten.</p><ul><li>Grundausbildung neuer Rekruten</li><li>Prüfungen für Rangbeförderungen</li><li>Entwicklung und Pflege des Ausbildungskonzepts</li><li>Schulungen für alle Units</li></ul><p style="margin-top:12px">Geführt ab <strong>Lieutenant Colonel</strong>.</p>`},
+  blackops:{icon:'🎯',title:'Black Ops Unit',lead:'Strategische Operationen',body:`<p>Die Elite-Einheit der SANG für strategisch wichtige Aufgaben.</p><ul><li>Planung und Koordination aller Großeinsätze</li><li>Strategische Führung und Lageanalyse</li><li>Verdeckte Operationen</li><li>Direkter Draht zum Generalstab</li></ul><p style="margin-top:12px">Geführt ab <strong>Colonel</strong>. Direkt dem General of the Army unterstellt.</p>`}
+};
+function openUnit(id){
+  const u=UD[id];
+  document.getElementById('um-icon').textContent=u.icon;
+  document.getElementById('um-title').textContent=u.title;
+  document.getElementById('um-lead').textContent=u.lead;
+  document.getElementById('um-body').innerHTML=u.body;
+  document.getElementById('umo').classList.add('open');
+}
+function closeUnit(e,force){
+  if(force||(e&&e.target===document.getElementById('umo')))
+    document.getElementById('umo').classList.remove('open');
+}
+
+/* ══════════════════════════════════
+   COPY PROTECTION
+══════════════════════════════════ */
+let tt;
+function showToast(){
+  const t=document.getElementById('ctost');
+  t.classList.add('show');clearTimeout(tt);
+  tt=setTimeout(()=>t.classList.remove('show'),3500);
+}
+document.addEventListener('copy',e=>{e.preventDefault();showToast()});
+document.addEventListener('cut',e=>{e.preventDefault();showToast()});
+document.addEventListener('contextmenu',e=>{e.preventDefault();showToast()});
+document.addEventListener('keydown',e=>{
+  if((e.ctrlKey||e.metaKey)&&['c','x','a','s','u'].includes(e.key.toLowerCase())){e.preventDefault();showToast()}
+  if(e.key==='F12'||(e.ctrlKey&&e.shiftKey&&['i','j','c'].includes(e.key.toLowerCase()))){e.preventDefault();showToast()}
+});
+
+/* ══════════════════════════════════
+   INIT
+══════════════════════════════════ */
+showPage('home');
+</script>
+</body>
+</html>
